@@ -52,6 +52,7 @@ export const register = async (req, res) => {
 export const resendOtp = async (req, res) => {
   try {
     const user = await Employer.findById(req.emp._id);
+
     //@ Generating OTP
     let otp = generateOtp(6, true, false, false, false);
 
@@ -65,7 +66,7 @@ export const resendOtp = async (req, res) => {
     const token = user.generateToken();
     res_user(
       res,
-      `OTP sent to : ${email}, please verify your email first`,
+      `OTP sent to : ${user.email}, please verify your email first`,
       token,
       null
     );
@@ -113,13 +114,13 @@ export const login = async (req, res) => {
     //* Checking if user has registered or not
     let user = await Employer.findOne({ email }).select("+password");
     if (!user) {
-      return res_failed(res, "Invalid Email or Password");
+      return res_failed(res, "Invalid Email ");
     }
 
     //* Checking Entered password is correct or not
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res_failed(res, "Invalid Email or Password");
+      return res_failed(res, "Invalid Password");
     }
 
     //* Checking if user has verified or not
@@ -172,7 +173,7 @@ export const forgetPassword = async (req, res) => {
 
     user.reset_pass_otp = otp;
     user.reset_pass_otp_expiry = new Date(
-      Date.now() + process.env.OTPToken_EXPIRE * 60 * 1000
+      Date.now() + process.env.OTP_EXPIRE * 60 * 1000
     );
     await user.save();
 
