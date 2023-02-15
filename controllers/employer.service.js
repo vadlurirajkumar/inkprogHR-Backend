@@ -52,6 +52,7 @@ export const register = async (req, res) => {
 export const resendOtp = async (req, res) => {
   try {
     const user = await Employer.findById(req.emp._id);
+
     //@ Generating OTP
     let otp = generateOtp(6, true, false, false, false);
 
@@ -65,7 +66,7 @@ export const resendOtp = async (req, res) => {
     const token = user.generateToken();
     res_user(
       res,
-      `OTP sent to : ${email}, please verify your email first`,
+      `OTP sent to : ${user.email}, please verify your email first`,
       token,
       null
     );
@@ -113,13 +114,13 @@ export const login = async (req, res) => {
     //* Checking if user has registered or not
     let user = await Employer.findOne({ email }).select("+password");
     if (!user) {
-      return res_failed(res, "Invalid Email or Password");
+      return res_failed(res, "Invalid Email ");
     }
 
     //* Checking Entered password is correct or not
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await user.comparePasswordEm(password);
     if (!isMatch) {
-      return res_failed(res, "Invalid Email or Password");
+      return res_failed(res, "Invalid Password");
     }
 
     //* Checking if user has verified or not
