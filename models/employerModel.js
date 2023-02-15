@@ -79,7 +79,7 @@ employerSchema.pre("save", async function (next) {
 });
 
 //@ Compairing Password
-employerSchema.methods.comparePasswordEmp = async function (password) {
+employerSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 

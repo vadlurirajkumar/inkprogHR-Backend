@@ -118,7 +118,7 @@ export const login = async (req, res) => {
     }
 
     //* Checking Entered password is correct or not
-    const isMatch = await user.comparePasswordEm(password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res_failed(res, "Invalid Password");
     }
